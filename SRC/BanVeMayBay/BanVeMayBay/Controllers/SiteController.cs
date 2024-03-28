@@ -42,7 +42,7 @@ namespace BanVeMayBay.Controllers
             //convert sang mm/dd/yy cho may hieu 
             DateTime ngaybay1 = DateTime.ParseExact(ngaybay, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 //sang mm/dd/yy
-            string ngaybay2 = ngaybay1.ToString("MM-dd-yyyy");
+            string ngaybay2 = ngaybay1.ToString("dd-MM-yyyy");
             DateTime ngaybay3 = DateTime.Parse(ngaybay2);
             ViewBag.noiBay = noiBay;
             ViewBag.noiVe = noiVe;
@@ -53,7 +53,7 @@ namespace BanVeMayBay.Controllers
             {
                 string ngayve = fc["arrival_date"];
                 DateTime ngayden1 = DateTime.ParseExact(ngayve, "d/M/yyyy", CultureInfo.InvariantCulture);
-                string ngayden2 = ngayden1.ToString("MM-dd-yyyy");
+                string ngayden2 = ngayden1.ToString("dd-MM-yyyy");
                 DateTime ngayden3 = DateTime.Parse(ngayden2);
                 ViewBag.ngayden = ngayve;
                 ViewBag.date = ngayden3;

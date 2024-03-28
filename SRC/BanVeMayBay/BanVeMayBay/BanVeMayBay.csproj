@@ -444,6 +444,9 @@
     <Compile Include="Areas\Admin\Controllers\TicketsController.cs" />
     <Compile Include="Areas\Admin\Controllers\TopicController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
+    <Compile Include="DesignPattern\Chain Of Responsibility\AuthenticationHandler.cs" />
+    <Compile Include="DesignPattern\Chain Of Responsibility\PasswordCheckHandler.cs" />
+    <Compile Include="DesignPattern\Chain Of Responsibility\UserNameCheckHandler.cs" />
     <Compile Include="Common\CommonConstants.cs" />
     <Compile Include="Common\CustomAuthorizeAttribute.cs" />
     <Compile Include="Common\Userlogin.cs" />
@@ -452,6 +455,16 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModulesController.cs" />
     <Compile Include="Controllers\SiteController.cs" />
+    <Compile Include="DesignPattern\Decorator\BusinessTicket.cs" />
+    <Compile Include="DesignPattern\Decorator\Iticket.cs" />
+    <Compile Include="DesignPattern\Decorator\NoteDecorator.cs" />
+    <Compile Include="DesignPattern\Decorator\PromotionTicket.cs" />
+    <Compile Include="DesignPattern\Decorator\RegularTicket.cs" />
+    <Compile Include="DesignPattern\Singleton\SessionManager.cs" />
+    <Compile Include="DesignPattern\Stategy\BusinessPriceFilterStrategy.cs" />
+    <Compile Include="DesignPattern\Stategy\EconomyPriceFilterStrategy.cs" />
+    <Compile Include="DesignPattern\Stategy\FirstClassPriceFilterStrategy.cs" />
+    <Compile Include="DesignPattern\Stategy\IPriceFilterStrategy.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -605,6 +618,7 @@
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
+    <Content Include="Views\Shared\FilterTickets.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -618,6 +632,7 @@
     <Folder Include="Areas\Admin\Views\City\" />
     <Folder Include="fonts\" />
     <Folder Include="Public\images\slider-blog\" />
+    <Folder Include="Singleton\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

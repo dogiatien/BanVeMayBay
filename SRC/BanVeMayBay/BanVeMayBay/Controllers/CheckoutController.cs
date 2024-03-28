@@ -1,4 +1,5 @@
 ﻿using BanVeMayBay.Common;
+using BanVeMayBay.DesignPattern.Decorator;
 using BanVeMayBay.Models;
 using PayPal.Api;
 using System;
@@ -59,10 +60,29 @@ namespace BanVeMayBay.Controllers
             user sessionUser = (user)Session[Common.CommonConstants.CUSTOMER_SESSION];
             if (sessionUser != null)
             {
+                int id1 = int.Parse(fc["datve"]);
+                string ticketType1 = db.tickets.Where(t => t.id == id1).Select(t => t.ticketType).FirstOrDefault();
                 iddd = sessionUser.ID;
                 var list = new List<ticket>();
-                
-                if(fc["datve"] != null)
+
+                // Tạo vé dựa trên loại vé
+                Iticket ticketss = new RegularTicket();
+
+                switch (ticketType1)
+                {
+                    case "Bussiness":
+                        ticketss = new BusinessTicket(ticketss);
+                        break;
+                    case "Promotion":
+                        ticketss = new PromotionTicket(ticketss);
+                        break;
+                    case "Economic":
+                        break;
+                    default:
+                        break;
+                }
+                ViewBag.Note = ticketss.Description;
+                if (fc["datve"] != null)
                 {
                     int id = int.Parse(fc["datve"]);
                     var list1 = db.tickets.Find(id);

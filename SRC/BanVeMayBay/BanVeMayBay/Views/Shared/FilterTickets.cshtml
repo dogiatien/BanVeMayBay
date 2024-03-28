@@ -1,0 +1,58 @@
+﻿@* Code của partial view *@
+<div class="container bg-white">
+    <div class="row">
+        <form action="~/Checkout/Index" method="post">
+            <input type="hidden" name="songuoi" value="@ViewBag.songuoi" />
+            <div class="flight-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Airline</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Class</th>
+                            <th>Detail</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.ticketss)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    <img style="width:80px;height:60px" src="~/public/images/flight/@item.airline" alt="">
+                                </td>
+                                <td>
+                                    <h6>@item.city.cityName</h6>
+                                    <p>Airport (@item.city.cityName)</p>
+                                </td>
+                                <td>
+                                    <h6>@item.city1.cityName</h6>
+                                    <P>Airport (@item.city1.cityName)</P>
+                                </td>
+                                <td>
+                                    <h6>@item.departure_time</h6>
+                                </td>
+                                <td>
+                                    <h6>@item.arrival_time</h6>
+                                </td>
+                                <td>
+                                    <h6>@item.ticketType</h6>
+                                </td>
+                                <td>
+                                    <a href="~/chuyen-bay/@item.id">Detail</a>
+                                </td>
+                                <td>
+                                    <h6><strong class="color-red-3">@item.price.ToString("N0") $</strong></h6>
+                                    <p class="emi">(Currency - $)</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>

@@ -2,9 +2,11 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_layOutSite.cshtml";
+    <script src="https://www.paypal.com/sdk/js?client-id=AYNVKZyD0S6n2sssn6dEnuNKXU3kX1foCJo3Yi2wa520nob112j4C94M-bR0TbvWH32-BAvhK5EDXgJS&currency=USD"></script>
 }
+
 <section class="booking">
-    <div class="container bg-white" >
+    <div class="container bg-white">
         <div class="row">
             <div class="col-md-12">
                 <div class="booking-form booking-outer">
@@ -39,7 +41,7 @@
                                                 <td>
                                                     <h6>@item.departure_time</h6>
                                                 </td>
-                                               
+
                                             </tr>
                                             <tr>
                                                 <td class="title">Arrive Time</td>
@@ -68,7 +70,7 @@
                     </div>
 
                     <form action="~/Checkout/checkOut" method="post">
-                       
+
 
                         <input type="hidden" value="@ViewBag.ve1" name="veOnvay" />
                         <input type="hidden" value="@ViewBag.ve2" name="veReturn" />
@@ -90,7 +92,7 @@
                             <div class="form-group col-xs-6 col-left-padding">
                                 <label>Phone:</label>
                                 <input name="phone" type="tel" required
-        class="form-control" id="phnumber" placeholder="0...." />
+                                       class="form-control" id="phnumber" placeholder="0...." />
                                 <span asp-validation-for="phone" class="text-danger"></span>
                             </div>
 
@@ -119,26 +121,27 @@
                                 <div class="checkbox-outer">
                                     <input type="radio" name="payment" value="checkinPayment" checked><label> Pay when CheckIn at the airport</label><br />
                                     @*<input type="radio" value="credit" disabled><label class="text-secondary"> <strike>Pay when by bank</strike> (Not Support Now)</label>*@
-                                    <a href="/checkout/PaymentWithPayPal"> Banking With paypal</a>
+                                    <a href="/checkout/PaymentWithPayPal" > Banking With paypal</a>
+                                    <div>@ViewBag.Note</div>
                                 </div>
                             </div>
 
                         </div>
 
 
-                         <div class="container ">
+                        <div class="container ">
                             <div class="row" style="padding-bottom:50px;">
-                            <div class="row" style="padding-bottom:50px">
-                                <div class="col-md-10">
+                                <div class="row" style="padding-bottom:50px">
+                                    <div class="col-md-10">
 
-                                </div>
-                                <div>
-                                    <button class="btn-blue btn-red btn-style-1 " type="submit">Next</button>
+                                    </div>
+                                    <div>
+                                        <button class="btn-blue btn-red btn-style-1 " type="submit">Next</button>
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                             </div>
                     </form>
 
 

@@ -1,4 +1,5 @@
-﻿using BanVeMayBay.Models;
+﻿using BanVeMayBay.DesignPattern.Singleton;
+using BanVeMayBay.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,13 @@ namespace BanVeMayBay.Controllers
         BANVEMAYBAYEntities2 db = new BANVEMAYBAYEntities2();
         public ActionResult _Header()
         {
-            if ((string)Session["userName11"] != "")
+            if (SessionManager.Instance.IsUserLoggedIn(this))
             {
-                ViewBag.sessionFullname = Session["userName11"];
+                ViewBag.sessionFullname = SessionManager.Instance.GetLoggedInUser(this).fullname;
             }
             else
             {
-
+                ViewBag.sessionFullname = null; // hoặc bất kỳ giá trị mặc định nào bạn muốn hiển thị khi không có phiên đăng nhập
             }
             return View("_Header");
         }

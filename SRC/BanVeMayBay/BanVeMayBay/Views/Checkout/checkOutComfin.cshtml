@@ -67,13 +67,14 @@
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.Action("_BookingConnfig", "Checkout", new { orderId = Model.ID})
+                @Html.Action("_BookingConnfig", "Checkout", new { orderId = Model.ID })
                 <h3> Total: @Model.total.ToString("N0") $</h3>
             </div>
         </div>
     </div>
 </section>
+

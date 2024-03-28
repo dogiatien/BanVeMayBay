@@ -20,7 +20,7 @@
                 <input type="hidden" id="ticketCheck" value="" />
 
                 <div class="row">
-                    
+
                     <div class="col-md-3 col-sm-6">
                         <div class="table_item">
                             <div class="form-group">
@@ -134,7 +134,7 @@
                         </div>
                     </div>
                 </div>
-                
+
 
                 <div class="col-md-12  ">
                     <div class="table_item " align="center">
@@ -235,6 +235,37 @@
     </div>
 
 </section>
+
+<div id="filteredTickets">
+    <!-- Hiển thị PartialView _FilteredTickets tại đây -->
+    <section class="flight-destinations">
+        <div class="col-md-12">
+            <div class="flight-head">
+                <div class="">
+                    <div class="col-md-10">
+                        <nav aria-label="breadcrumb">
+                            <span style="font-weight:bold; font-size:22px;color:#ff6a00;"><i class="fas fa-fighter-jet"></i> Ticket Prices List </span>
+                        </nav>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="~/chuyen-bay-trong-ngay" class="btn-blue btn-red btn-style-1 w-100">View All</a>
+                    </div>
+                </div>
+                <div class="text-right mt-2">
+                    <button type="button" class="btn btn-primary" onclick="filterTickets('economy')">Economy</button>
+                    <button type="button" class="btn btn-primary" onclick="filterTickets('business')">Business</button>
+                    <button type="button" class="btn btn-primary" onclick="filterTickets('firstclass')">First Class</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="filteredTicketsResult">
+        @Html.Action("FilterTickets", new { ticketType = "economy" })
+    </div>
+</div>
+
+
+
 <script>
     $("#form-search").submit(function (event) {
         $("#ngaybay").text("");
@@ -276,4 +307,20 @@
             }
         });
     });
+
+    //Stategy scipt
+    function filterTickets(ticketType) {
+    $.ajax({
+        url: '@Url.Action("FilterTickets", "Home")',
+        type: 'GET',
+        data: { ticketType: ticketType },
+        success: function (data) {
+            $('#filteredTicketsResult').html(data);
+        },
+        error: function () {
+            alert('An error occurred while filtering tickets.');
+        }
+    });
+}
+
 </script>

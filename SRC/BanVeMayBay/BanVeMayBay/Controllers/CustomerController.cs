@@ -4,60 +4,84 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using System.Data.Entity;
+using BanVeMayBay.Chain_Of_Responsibility;
+using BanVeMayBay.DesignPattern.Singleton;
 
 namespace BanVeMayBay.Controllers
 {
     public class CustomerController : Controller
     {
         private BANVEMAYBAYEntities2 db = new BANVEMAYBAYEntities2();
+        private static CustomerController _instance;
+        private static readonly object _lock = new object();
         // GET: Customer
         public ActionResult Login()
         {
+            if (SessionManager.Instance.IsUserLoggedIn(this))
+            {
+                // Nếu đã đăng nhập, chuyển hướng đến trang tài khoản của người dùng
+                return RedirectToAction("Myaccount");
+            }
             return View("Login");
         }
         [HttpPost]
-        public ActionResult login(FormCollection fc)
+        public ActionResult Login(FormCollection fc)
         {
-            String Username = fc["username"];
-            string Pass = Mystring.ToMD5(fc["password"]);
-            var user_account = db.users.Where(m => m.access == 1 && m.status == 1 && (m.username == Username));
-            var pass = user_account.FirstOrDefault()?.password;
-                if (user_account.Count() == 0)
-                {
-                    ViewBag.error = "Username Incorrect";
-                }
-                else
-                {
-                    var pass_account = user_account.Where(m => m.access == 1 && m.status == 1 && m.password == Pass).FirstOrDefault();
-                    if (pass_account == null)
-                    {
-                        ViewBag.error = "Incorrect password";
-                    }
-                    else
-                    {
-                    var user = user_account.First();
-                    Session.Add(CommonConstants.CUSTOMER_SESSION, user);
-                    Session["userName11"] = user.fullname;
-                    Session["id"] = user.ID;
-                    if (!Response.IsRequestBeingRedirected)
-                        Message.set_flash("Logged in successfully", "success");
-                    return Redirect("~/tai-khoan");
-                }
-                }
-            
+            // Tạo chuỗi xử lý
+            AuthenticationHandler usernameHandler = new UserNameCheckHandler();
+            AuthenticationHandler passwordHandler = new PasswordCheckHandler();
+
+            usernameHandler.SetNextHandler(passwordHandler);
+            if (SessionManager.Instance.IsUserLoggedIn(this))
+            {
+                // Nếu đã đăng nhập, chuyển hướng đến trang tài khoản của người dùng
+                return RedirectToAction("Myaccount");
+            }
+            // Bắt đầu xử lý
+            if (usernameHandler.HandleRequest(fc, db))
+            {
+                //// Đăng nhập thành công
+                //var username = fc["username"];
+                //var user = db.users.FirstOrDefault(u => u.username == username);
+                //Session.Add(CommonConstants.CUSTOMER_SESSION, user);
+                
+                //Session["id"] = user.ID;
+                //if (!Response.IsRequestBeingRedirected)
+                //    Message.set_flash("Logged in successfully", "success");
+                //return Redirect("~/tai-khoan");
+                var username = fc["username"];
+                var user = db.users.FirstOrDefault(u => u.username == username);
+
+                // Sử dụng SessionManager để lưu thông tin phiên đăng nhập
+                SessionManager.Instance.SetLoggedInUser(this, user);
+                //Session["userName11"] = user.fullname;
+
+                if (!Response.IsRequestBeingRedirected)
+                    Message.set_flash("Logged in successfully", "success");
+
+                return Redirect("~/tai-khoan");
+            }
+
             ViewBag.sess = Session["Admin_id"];
             return View("Login");
-
         }
+
         public void logout()
         {
-            Session["userName11"] = "";
-            Session[Common.CommonConstants.CUSTOMER_SESSION]="";
+            
+            //Session[Common.CommonConstants.CUSTOMER_SESSION] = "";
+            SessionManager.Instance.Logout(this);
+            //Session["userName11"] = "";
             Response.Redirect("~/dang-nhap");
             Message.set_flash("Sign out successful", "success");
         }
         public ActionResult register()
         {
+            if (SessionManager.Instance.IsUserLoggedIn(this))
+            {
+                // Nếu đã đăng nhập, chuyển hướng đến trang tài khoản của người dùng
+                return RedirectToAction("Myaccount");
+            }
             return View("register");
         }
         [HttpPost]
@@ -67,6 +91,11 @@ namespace BanVeMayBay.Controllers
             string fname = fc["fname"];
             string Pass = Mystring.ToMD5(fc["psw"]);
             string Pass2 = Mystring.ToMD5(fc["repsw"]);
+            if (SessionManager.Instance.IsUserLoggedIn(this))
+            {
+                // Nếu đã đăng nhập, chuyển hướng đến trang tài khoản của người dùng
+                return RedirectToAction("Myaccount");
+            }
             if (Pass2 != Pass)
             {
                 ViewBag.error = "password incorrect";
@@ -110,18 +139,18 @@ namespace BanVeMayBay.Controllers
             return View("register");
         }
 
-        public  ActionResult Myaccount()
+        public ActionResult Myaccount()
         {
             user sessionUser = (user)Session[Common.CommonConstants.CUSTOMER_SESSION];
             return View("Myaccount", sessionUser);
         }
         [HttpPost]
-        public ActionResult Myaccount(user user,FormCollection fc)
+        public ActionResult Myaccount(user user, FormCollection fc)
         {
             var pswO = fc["pswO"];
             var pswN = fc["pswN"];
             var pswR = fc["pswR"];
-            if(pswO != null)
+            if (pswO != null)
             {
                 if (pswO.ToMD5() != user.password)
                 {
@@ -132,7 +161,7 @@ namespace BanVeMayBay.Controllers
                 {
                     ViewBag.success = "The new password is not valid.";
                     return View("Myaccount", user);
-                }    
+                }
                 if (pswN.ToMD5() != pswR.ToMD5())
                 {
                     ViewBag.success = "Password incorrect.";
@@ -142,7 +171,7 @@ namespace BanVeMayBay.Controllers
                 {
                     user.password = pswN.ToMD5();
                 }
-            }    
+            }
 
             Session[Common.CommonConstants.CUSTOMER_SESSION] = "";
             Session.Add(CommonConstants.CUSTOMER_SESSION, user);
@@ -157,9 +186,9 @@ namespace BanVeMayBay.Controllers
         }
         public ActionResult ListOderCus()
         {
-         
+
             user sessionUser = (user)Session[Common.CommonConstants.CUSTOMER_SESSION];
-            var listOrder = db.orders.Where(m=>m.CusId == sessionUser.ID).OrderByDescending(m=>m.ID).ToList();
+            var listOrder = db.orders.Where(m => m.CusId == sessionUser.ID).OrderByDescending(m => m.ID).ToList();
             return View("ListOderCus", listOrder);
         }
         public ActionResult orderDetailCus(int id)
@@ -169,7 +198,7 @@ namespace BanVeMayBay.Controllers
         }
         public ActionResult canelOrder(int OrderId)
         {
-           
+
 
             order morder = db.orders.Find(OrderId);
             var orderDetail = db.ordersdetails.Where(m => m.orderid == morder.ID).ToList();
@@ -182,7 +211,7 @@ namespace BanVeMayBay.Controllers
                 DateTime ngaytra = Convert.ToDateTime(ticket.departure_date);
                 TimeSpan Time = ngaytra - ngaymuon;
                 int TongSoNgay = Time.Days;
-               if(TongSoNgay >= 14)
+                if (TongSoNgay >= 14)
                 {
                     ticket.Sold = ticket.Sold - item.quantity;
                     db.Entry(ticket).State = EntityState.Modified;
@@ -200,10 +229,10 @@ namespace BanVeMayBay.Controllers
                     Message.set_flash("Tickets cannot be canceled 14 days before flight date", "dangger");
                     return Redirect("~/tai-khoan");
                 }
-                
-               
+
+
             }
-                  
+
             db.orders.Remove(morder);
             db.SaveChanges();
             Message.set_flash("Canceled 1 order", "success");
